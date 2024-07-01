@@ -5,10 +5,10 @@ export async function GET(request: NextRequest) {
   try {
     const authorizationHeader = request.headers.get("Authorization");
 
-    // Check if the Authorization header is present and matches the expected value
-    if (authorizationHeader !== "1245678") {
-      return Response.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    // // Check if the Authorization header is present and matches the expected value
+    // if (authorizationHeader !== "1245678") {
+    //   return Response.json({ message: "Unauthorized" }, { status: 401 });
+    // }
 
     const db = await connectToDatabase();
     const collection = db.collection("users");

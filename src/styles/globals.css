@@ -72,10 +72,8 @@
   }
   body {
     @apply bg-background text-foreground;
-    transition: 0.2s;
   }
   header {
     @apply bg-background text-foreground;
-    transition: 0.2s;
   }
 }

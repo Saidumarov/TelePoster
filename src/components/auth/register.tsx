@@ -1,29 +1,66 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BottomGradient, LabelInputContainer } from "../ui";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import Link from "next/link";
-import { Live, LiveView } from "@/constants/svg";
+import { Live, LiveView, Loading } from "@/constants/svg";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const RegisterComponenet = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setisLoading] = useState(false);
+  const root = useRouter();
   const [user, setUser] = useState({
     firstname: "",
     lastname: "",
     email: "",
     password: "",
   });
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(user));
-    console.log(user);
+    setisLoading(true);
+    try {
+      const response = await axios.post("/api/auth/register", user);
+      const data = await response.data;
+      // console.log(data);
+      if (data?.message === "Register successful") {
+        localStorage.setItem("user", JSON.stringify(data));
+        root.push("/step");
+      }
+    } catch (error) {
+      console.log(error);
+      if (
+        error instanceof Error &&
+        (error as { response?: { data: { message: string } } }).response?.data
+          .message === "User already registered"
+      ) {
+        toast.error("Bu foydalanuvchi mavjud");
+      }
+    } finally {
+      setUser({
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+      });
+      setisLoading(false);
+    }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      root.push("/dashboard");
+    }
+  }, []);
   return (
     <div className=" h-screen flex  items-center justify-center">
       <div className="sign max-w-md w-full mx-auto rounded-2xl  p-4 md:p-8 shadow-input bg-white dark:bg-black  ">
@@ -44,6 +81,7 @@ const RegisterComponenet = () => {
                 name="firstname"
                 id="firstname"
                 type="text"
+                value={user.firstname}
               />
             </LabelInputContainer>
             <LabelInputContainer>
@@ -54,6 +92,7 @@ const RegisterComponenet = () => {
                 name="lastname"
                 id="lastname"
                 type="text"
+                value={user.lastname}
               />
             </LabelInputContainer>
           </div>
@@ -65,6 +104,7 @@ const RegisterComponenet = () => {
               name="email"
               id="email"
               type="email"
+              value={user.email}
             />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4 relative  ">
@@ -75,6 +115,7 @@ const RegisterComponenet = () => {
               name="password"
               id="password"
               type={showPassword ? "text" : "password"}
+              value={user.password}
             />
             <button
               type="button"
@@ -86,10 +127,19 @@ const RegisterComponenet = () => {
           </LabelInputContainer>
 
           <button
-            className="  group/btn  uppercase relative bg-[#f0f5fa] border  dark:bg-[#10132b] dark:text-[#f0f5fa] flex w-full px-5 py-3 items-center justify-center gap-1 rounded-md text-[14px] font-[500]"
+            disabled={isLoading}
+            className={`${
+              isLoading && "dark:bg-[#1a1e3e] cursor-not-allowed  bg-[#eaf0f6]"
+            } group/btn  uppercase relative bg-[#f0f5fa] border  dark:bg-[#10132b] dark:text-[#f0f5fa] flex w-full px-5 py-3 items-center justify-center gap-1 rounded-md text-[14px] font-[500]`}
             type="submit"
           >
-            Davom etish <span className="block">&rarr;</span>
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <>
+                Davom etish <span className="block">&rarr;</span>
+              </>
+            )}
             <BottomGradient />
           </button>
           <p className="text-[13px] flex gap-2 pt-3 pl-3 ">

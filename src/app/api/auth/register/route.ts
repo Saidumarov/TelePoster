@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert the new user
-    await collection.insertOne({
+    const Insert = await collection.insertOne({
       firstname,
       lastname,
       email,
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
     });
 
     const newUser = {
-      message: " Register successful",
-      user: { firstname, lastname, email, password },
+      message: "Register successful",
+      user: { _id: Insert.insertedId, firstname, lastname, email, password },
     };
 
     return Response.json(newUser, { status: 200 });
