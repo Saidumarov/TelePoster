@@ -5,8 +5,8 @@ import { createContext, useState, ReactNode, useEffect } from "react";
 export const UserContext = createContext({
   userInfo: false,
   setUserInfo: (info: boolean) => {},
-  render: false,
-  setRender: (info: boolean) => {},
+  render: 0,
+  setRender: (info: number) => {},
 });
 
 interface Props {
@@ -15,14 +15,16 @@ interface Props {
 
 function UserProvider({ children }: Props) {
   const [userInfo, setUserInfo] = useState(false);
-  const [render, setRender] = useState(false);
+  const [render, setRender] = useState(0);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       setUserInfo(true);
+    } else {
+      setUserInfo(false);
     }
-  }, []);
+  }, [render]);
   return (
     <UserContext.Provider
       value={{

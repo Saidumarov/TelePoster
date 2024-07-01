@@ -30,7 +30,7 @@ const Header = () => {
             </p>
           </Link>
 
-          <div className="flex items-center gap-5 max-[500px]:gap-2">
+          <div className="flex items-center gap-2 max-[500px]:gap-2">
             <ThemeSwitcher />
             {userInfo ? (
               <UserMenu />

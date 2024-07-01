@@ -77,3 +77,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media (max-height: 770px) {
+  .sign {
+    margin-top: 70px;
+  }
+}

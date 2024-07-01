@@ -31,14 +31,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useContext } from "react";
+import { UserContext } from "@/context/user";
+import { useRouter } from "next/navigation";
 
 export function UserMenu() {
+  const { setRender, render } = useContext(UserContext);
+  const root = useRouter();
+  const logaut = () => {
+    localStorage.removeItem("user");
+    setRender(render + 1);
+    root.push("/login");
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="text-white w-[46px] h-[43px] rounded-full"
+          className=" hover:bg-[#f4f6f9]  dark:hover:bg-[#151838] text-black w-[46px] h-[43px] rounded-full  dark:bg-[#10132b] dark:text-[#f0f5fa] bg-[#f0f5fa]"
         >
           JS
         </Button>
@@ -48,10 +58,10 @@ export function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <Link href={"/dashboard"}>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
               <User className="mr-2 h-4 w-4" />
               <span>Dashbooard</span>
-              <DropdownMenuShortcut>⇧⌘d</DropdownMenuShortcut>
+              <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
           {/* <DropdownMenuItem>
@@ -119,7 +129,7 @@ export function UserMenu() {
           <span>API</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator /> */}
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={logaut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

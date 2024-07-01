@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BottomGradient, LabelInputContainer } from "../ui";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -8,11 +8,13 @@ import { Live, LiveView, Loading } from "@/constants/svg";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/user";
 
 const LoginComponenet = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setisLoading] = useState(false);
   const root = useRouter();
+  const { setRender, setUserInfo } = useContext(UserContext);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -24,10 +26,11 @@ const LoginComponenet = () => {
     try {
       const response = await axios.post("/api/auth/login", user);
       const data = await response.data;
-      console.log(data);
+      // console.log(data);
       if (data?.message === "Login successful") {
         localStorage.setItem("user", JSON.stringify(data));
         root.push("/dashboard");
+        setUserInfo(true);
       }
     } catch (error) {
       console.log(error);

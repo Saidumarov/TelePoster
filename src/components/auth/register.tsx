@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BottomGradient, LabelInputContainer } from "../ui";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -8,11 +8,13 @@ import { Live, LiveView, Loading } from "@/constants/svg";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/user";
 
 const RegisterComponenet = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setisLoading] = useState(false);
   const root = useRouter();
+  const { setUserInfo } = useContext(UserContext);
   const [user, setUser] = useState({
     firstname: "",
     lastname: "",
@@ -29,6 +31,7 @@ const RegisterComponenet = () => {
       if (data?.message === "Register successful") {
         localStorage.setItem("user", JSON.stringify(data));
         root.push("/step");
+        setUserInfo(true);
       }
     } catch (error) {
       console.log(error);
@@ -61,9 +64,10 @@ const RegisterComponenet = () => {
       root.push("/dashboard");
     }
   }, []);
+
   return (
     <div className=" h-screen flex  items-center justify-center">
-      <div className="sign max-w-md w-full mx-auto rounded-2xl  p-4 md:p-8 shadow-input bg-white dark:bg-black  ">
+      <div className="sign max-w-md w-full mx-auto rounded-2xl   p-4 md:p-8 shadow-input bg-white dark:bg-black  ">
         <h2 className="font-bold text-xl text-center text-neutral-800 dark:text-neutral-200">
           Hisob yarating
         </h2>
