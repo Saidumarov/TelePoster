@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
 // User update
 export async function PUT(request: NextRequest) {
   try {
-    const { email, firstname, lastname, password } = await request.json();
+    const { email, firstname, lastname, password, name, link } =
+      await request.json();
 
     const db = await connectToDatabase();
     const collection = db.collection("users");
@@ -59,12 +60,33 @@ export async function PUT(request: NextRequest) {
             firstname,
             lastname,
             password,
+            channel: [
+              {
+                name,
+                link,
+              },
+            ],
           },
         }
       );
-
+      const id = existingUser._id;
       return Response.json(
-        { message: "User information updated", user: existingUser },
+        {
+          message: "User information updated",
+          user: {
+            _id: id,
+            firstname,
+            lastname,
+            email,
+            password,
+            channel: [
+              {
+                name,
+                link,
+              },
+            ],
+          },
+        },
         { status: 200 }
       );
     } else {
